@@ -1,6 +1,11 @@
 # 微北洋客户端api
 
 ## 前置说明
+
+- 微北洋应用端使用ua：`Dart/3.3 (dart:io)`
+- __全部api仅可在校园网环境下使用__
+- 全部api应使用https访问
+
 | api分类 | 地址 |
 | ---- | ---- |
 | 主api | `https://api.twt.edu.cn/api/`|
@@ -9,17 +14,33 @@
 | 升级信息获取| `https://upgrade.twt.edu.cn` |
 |~~未知/废弃~~| `https://haitang.twt.edu.cn` |
 
-- 特殊请求头参数（对于主api）：
+### - 特殊请求头参数（对于主api）：
   ```json
   {
     "domain":"weipeiyang.twt.edu.cn",
     "ticket":"YmFuYW5hLjM3YjU5MDA2M2Q1OTM3MTY0MDVhMmM1YTM4MmIxMTMwYjI4YmY4YTc="
   }
   ```
-- 微北洋应用端使用ua：`Dart/3.3 (dart:io)`
-- __该api仅可在校园网环境下使用__
 
-## 身份验证
+
+### - 为避免重复，此处给出空响应示例：
+```json
+{
+    "error_code": 0,
+    "message": "成功",
+    "result": null
+}
+```
+- 响应参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| error_code | 错误代码，若成功则为0|
+| message | 提示信息，若成功则为“成功” | 
+| result | null |
+
+
+## 身份验证（使用主api）
 
 ### 使用密码登录
 
@@ -70,7 +91,7 @@
 | error_code | 错误代码，若成功则为0|
 | message | 提示信息，若成功则为“成功” | 
 | userNumber | 学号 |
-| nickname | 昵称 |
+| nickname | 昵称（对应本节中用户名，非论坛区域昵称） |
 | telephone | 电话号码 |
 | email | 邮箱 |
 | token | 本次登录的凭据 |
@@ -101,23 +122,9 @@
 | ----  | --- |
 | phone | 手机号码 |
 
-- 响应示例：
-```json
-{
-    "error_code": 0,
-    "message": "成功",
-    "result": null
-}
-```
-- 响应参数说明：
+- 响应示例：空响应
 
-| 参数名 |解释 |
-| ----  | --- |
-| error_code | 错误代码，若成功则为0|
-| message | 提示信息，若成功则为“成功” | 
-| result | null |
-
-- #### 该请求会返回一个名为 JESSIONID 的 cookie，后续使用验证码相关请求时需加上该cookie。
+- #### 该请求会返回一个名为 JSESSIONID 的 cookie，后续使用验证码相关请求时需加上该cookie。
 
 ### 使用手机验证码登录
 
@@ -143,8 +150,7 @@
 | phone | 手机号码 |
 | code | 验证码 |
 
-- 响应示例：同“获取手机验证码”
-- 响应参数说明：同“获取手机验证码”
+- 响应示例：空响应
 
 ### 忘记密码-密码重置（在已完成验证前提下，使用手机号+新密码重置密码）
 
@@ -157,8 +163,7 @@
 | phone | 手机号码 |
 | password | 新密码 |
 
-- 响应示例：同“获取手机验证码”
-- 响应参数说明：同“获取手机验证码”
+- 响应示例：空响应
 
 ### 更新token
 
@@ -186,3 +191,187 @@
 | message | 提示信息，若成功则为“成功” | 
 | result | 新token |
 
+### 登录状态下修改密码
+
+- 请求url： `/password/person/reset?password={password}`
+- 请求方法：`put`
+- **URL**参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| password | 新密码 |
+
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| token | 登录凭据 |
+
+- 响应示例：空响应
+
+###### 微北洋将对旧密码的一致性校验功能做在本地应用实现，因此此处无需旧密码；*这是一种极其不安全的行为!*
+
+### 登录状态下补全信息（第一次登录时）*（待测试/补充）*
+- 请求url： `/user/single?telephone={telephone}&verifyCode={verifyCode}&email={email}`
+- 请求方法：`put`
+- **URL**参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| telephone | 电话号码 |
+| verifyCode | 验证码 |
+| email | 邮箱 |
+
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| token | 登录凭据 |
+
+- 响应示例：空响应 *（待测试/补充）*
+
+### 登录状态下更新手机号
+- 请求url： `/user/single/phone?={phone}&code={code}`
+- 请求方法：`put`
+- **URL**参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| phone | 电话号码 |
+| code | 验证码 |
+
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| token | 登录凭据 |
+
+- 响应示例：空响应
+
+### 登录状态下更新邮箱
+- 请求url： `/user/single/email?email={email}`
+- 请求方法：`put`
+- **URL**参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| email | 新邮箱 |
+
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| token | 登录凭据 |
+
+- 响应示例：空响应
+
+### 登录状态下更新用户名（与论坛用户名不同）
+- 请求url： `/user/single/username?username={username}`
+- 请求方法：`put`
+- **URL**参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| username | 新用户名 |
+
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| token | 登录凭据 |
+
+- 响应示例：空响应
+
+### 注册信息查重检测（检测学号、用户名是否重复）
+
+- 请求url： `/register/checking/{userNumber}/{username}`
+- 请求方法：`get`
+- **URL**参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| userNumber | 学号 |
+| username | 用户名 |
+
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| token | 登录凭据 |
+
+- 响应示例：空响应
+
+### 注册信息查重检测（检测身份证、邮箱、手机号是否重复）
+
+- 请求url： `/register/checking`
+- 请求方法：`post`
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| idNumber | 身份证号 |
+| email | 邮箱 |
+| phone | 手机号码 | 
+
+- 响应示例：空响应
+
+### 注册 *（待测试/补充）*
+
+- 请求url： `/register`
+- 请求方法：`post`
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| userNumber | 学号 |
+| nickname | 用户名 |
+| phone | 手机号码 | 
+| verifyCode | 验证码 |
+| password | 密码 |
+| email | 邮箱 |
+| idNumber | 身份证号 |
+
+- 响应示例：*（待测试/补充）*
+
+### 获取当前学期信息
+
+- 请求url： `/semester`
+- 请求方法：`get`
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| token | 登录凭据 |
+
+- 响应示例：
+```json
+{
+    "error_code": 0,
+    "message": "成功",
+    "result": {
+        "semesterName": "24253",
+        "semesterStartAt": "2025-09-08",
+        "semesterStartTimestamp": 1757260800
+    }
+}
+```
+- 响应参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| semesterName | 学期名（似乎与实际并不一致，如文档编写时为25261学期）|
+| semesterStartAt | 该学期开始日期 | 
+| semesterStartTimestamp | 该学期开始时间戳 |
+
+### **永久**注销账号
+- 请求url： `/auth/logout`
+- 请求方法：`post`
+- 请求体参数说明：
+
+| 参数名 |解释 |
+| ----  | --- |
+| token | 旧token |
+
+- 响应示例：空响应
+
+### 获取cid（消息推送使用）（待补充）
